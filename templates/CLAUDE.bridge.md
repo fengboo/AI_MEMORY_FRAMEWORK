@@ -7,7 +7,7 @@ description: 放在任何工程目录根下，作为 Claude Code 通向 AI_MEMOR
 ---
 
 <!-- AI_MEMORY_ROOT = <AI_MEMORY_ROOT> -->
-<!-- 使用时替换为实际路径，例如 C:\Users\<user>\Documents\codex\AI_MEMORY -->
+<!-- 使用时替换为实际路径，例如 C:\Path\To\AI_MEMORY 或 /path/to/AI_MEMORY -->
 
 <!-- 只修改本文件顶部的 AI_MEMORY_ROOT 和 Bridge Switches。
      下方正文只是说明，不作为第二份配置。 -->
