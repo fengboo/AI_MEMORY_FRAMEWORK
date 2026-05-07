@@ -50,7 +50,8 @@ AI_MEMORY/
 │           └── supervision/               ←   多角色协作通道（可选）
 ├── scripts/                               ← 验证工具脚本
 │   ├── ai_context_lint.py                 ←   front matter 完整性检查
-│   └── ai_context_link_check.py           ←   内部链接有效性检查
+│   ├── ai_context_link_check.py           ←   内部链接有效性检查
+│   └── bridge_config_check.py             ←   bridge 开关配置校验
 ├── templates/                             ← 桥接模板（复制到工程目录用）
 │   ├── AGENTS.bridge.md                   ←   Codex / AGENTS.md 生态用
 │   └── CLAUDE.bridge.md                   ←   Claude Code 用
@@ -123,11 +124,22 @@ git clone <your-repo-url> /path/to/AI_MEMORY
 ## 验证命令
 
 ```bash
-# Front matter 完整性
+# Front matter 完整性（推荐 --strict + --json 做 CI 集成）
 python scripts/ai_context_lint.py --strict
+python scripts/ai_context_lint.py --strict --json
 
-# 内部链接有效性
+# 内部链接有效性（--all 扫描全树，--anchors 检查锚点片段）
 python scripts/ai_context_link_check.py
+python scripts/ai_context_link_check.py --all --anchors --json
+
+# Bridge 模板开关配置校验（--all 检查所有 bridge 文件）
+python scripts/bridge_config_check.py templates/AGENTS.bridge.md
+python scripts/bridge_config_check.py --all
+
+# Python 语法检查
+python -m py_compile scripts/ai_context_lint.py
+python -m py_compile scripts/ai_context_link_check.py
+python -m py_compile scripts/bridge_config_check.py
 ```
 
 ## 刻意不包括的内容

@@ -6,8 +6,8 @@ version: 0.3
 description: 放在任何工程目录根下，作为通向 AI_MEMORY 集中上下文的桥梁
 ---
 
-<!-- AI_MEMORY_ROOT = /path/to/AI_MEMORY -->
-<!-- 使用时仅需修改上面这一个路径变量 -->
+<!-- AI_MEMORY_ROOT = <AI_MEMORY_ROOT> -->
+<!-- 使用时替换为实际路径，例如 C:\Users\<user>\Documents\codex\AI_MEMORY -->
 
 <!-- 只修改本文件顶部的 AI_MEMORY_ROOT 和 Bridge Switches。
      下方正文只是说明，不作为第二份配置。 -->
