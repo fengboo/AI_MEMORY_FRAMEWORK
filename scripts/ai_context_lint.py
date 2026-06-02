@@ -37,14 +37,15 @@ REQUIRED_ALL = {"type"}
 # Key files must have type, scope, status. last_updated enforced in --strict mode.
 REQUIRED_KEY = {"type", "scope", "status"}
 VALID_STATUS = {"active", "deprecated", "resolved", "synthetic", "candidate",
-                "open", "closed", "pending"}
+                "open", "closed", "pending", "draft"}
 VALID_TYPES = {
     "root_index", "project_index", "project", "policy", "workflow",
     "skill", "user_profile", "todo", "constraints", "conflicts",
     "corrections", "decisions", "open_questions", "route_log",
     "validation_plan", "supervision_index", "executor_brief",
     "handoff_log", "supervision_questions", "review_checkpoints",
-    "validation_report", "next_phase_plan",
+    "validation_report", "next_phase_plan", "index", "flow", "tool",
+    "pattern", "convention",
 }
 
 SKIP_DIRS = {"reference", "templates", "scripts"}

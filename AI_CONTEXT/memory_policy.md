@@ -103,3 +103,24 @@ AI 可以提议 memory 更新，但关键 memory 的变更必须经过用户 rev
 - [ ] 无 `ai_assumption` 与 `confirmed_decision` 矛盾且未写入 conflicts 的情况
 
 满足上述检查的 ≥80% 即可视为健康。AI 可在检测到异常时建议用户做一次 maintenance session。
+
+## Appendix: Future memory lifecycle design
+
+当前 memory policy 主要覆盖 memory 可信度、冲突、纠正、轻量检索和项目级记录。
+
+未来当 memory 数据规模增长后，可以追加 memory lifecycle 机制，用于控制：
+
+- 哪些 memory 默认进入 AI context；
+- 哪些 memory 只作为 archive / evidence；
+- 哪些 route log 应被压缩为 summary；
+- 哪些项目内经验应提升为 reusable flow / tool / pattern；
+- 哪些旧决策应标记 deprecated 或 superseded；
+- 哪些记忆需要 review。
+
+当前不强制执行该机制，不要求现有 Markdown 文件补齐 lifecycle metadata，不改变 bridge 加载逻辑。
+
+未来设计参考：
+
+- `docs/future_memory_lifecycle_design.md`
+- `docs/memory_lifecycle_policy_draft.md`
+- `docs/future_upgrade_trigger_conditions.md`

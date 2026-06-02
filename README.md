@@ -37,6 +37,7 @@ AI_MEMORY/
 │   ├── skills/
 │   │   ├── engineering_spec_workflow.md   ←   Skill：工程规格工作流
 │   │   └── trust_and_verification.md      ←   Skill：可信度与验证
+│   ├── reusable/                          ←   跨项目可复用 memory（flows / tools / patterns / conventions）
 │   └── projects/
 │       ├── index.md                       ←   项目索引 + 检索规则
 │       └── example_project/               ←   示例项目（展示机制用法）
@@ -51,10 +52,13 @@ AI_MEMORY/
 ├── scripts/                               ← 验证工具脚本
 │   ├── ai_context_lint.py                 ←   front matter 完整性检查
 │   ├── ai_context_link_check.py           ←   内部链接有效性检查
-│   └── bridge_config_check.py             ←   bridge 开关配置校验
+│   ├── bridge_config_check.py             ←   bridge 开关配置校验
+│   └── build_site.py                      ←   生成 HTML site viewer
+├── site/                                  ← HTML 查看层（generated，不是 source of truth）
 ├── templates/                             ← 桥接模板（复制到工程目录用）
 │   ├── AGENTS.bridge.md                   ←   Codex / AGENTS.md 生态用
-│   └── CLAUDE.bridge.md                   ←   Claude Code 用
+│   ├── CLAUDE.bridge.md                   ←   Claude Code 用
+│   └── lifecycle_metadata_template.md     ←   future lifecycle metadata 参考模板
 └── docs/                                  ← 补充文档
     ├── method_overview.md                 ←   方法论概述
     └── phase5_advanced_options.md         ←   Phase 5 高级特性说明
@@ -152,6 +156,32 @@ python -m py_compile scripts/bridge_config_check.py
 ## 当前状态
 
 本仓库是脱敏后的通用框架。Phase 0-4 的机制已实施并可复用。Phase 5 advanced features 记录在 `docs/phase5_advanced_options.md` 中但未实现。
+
+## HTML site viewer and reusable memory
+
+Markdown remains the canonical source of truth. The optional `site/` viewer renders `AI_CONTEXT/**/*.md` into static HTML dashboards for human-friendly browsing, review, and navigation.
+
+Cross-project reusable memories are stored under `AI_CONTEXT/reusable/` and organized as `flows/`, `tools/`, `patterns/`, and `conventions`. Projects can reference reusable memory through metadata such as `uses_flows`, `uses_tools`, `inherits_patterns`, and `inherits_conventions`.
+
+Build the viewer with:
+
+```bash
+python scripts/build_site.py
+```
+
+Generated HTML and JSON under `site/generated/` are view/cache artifacts. Do not treat them as the authoritative memory source.
+
+## Future memory lifecycle
+
+当前框架暂不实现完整的 memory lifecycle / compression / archive 机制。未来当项目数量、route log、reusable memory 和历史决策增长到产生真实噪声时，可在现有 Markdown 文件树上追加 `active / warm / cold / archived / deprecated / superseded` lifecycle state、raw log → summary → reusable pattern 的压缩路径、memory health dashboard 和 retrieval policy。
+
+当前合入的 lifecycle 内容只是 future upgrade design，不改变主流程、不迁移历史文件、不修改 bridge 加载逻辑。
+
+See:
+
+- `docs/future_memory_lifecycle_design.md`
+- `docs/memory_lifecycle_policy_draft.md`
+- `docs/future_upgrade_trigger_conditions.md`
 
 ## 许可
 

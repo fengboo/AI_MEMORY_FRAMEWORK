@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Review Queue</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      
+      <h1>AI Memory</h1>
+      <a href="index.html">Overview</a>
+      <a href="projects.html">Projects</a>
+      <a href="reusable.html">Reusable</a>
+      <a href="review_queue.html">Review Queue</a>
+      <a href="search_index.json">JSON Index</a>
+    
+    </aside>
+    <main>
+      <div class="generated-note">Generated from Markdown. Do not edit generated HTML directly.</div>
+      
+    <h1>Review Queue</h1>
+    <p>该页面聚合可能需要人类 review 的 memory：conflicts、corrections、open_questions、draft/pending/candidate/low-trust 等。</p>
+    <input id="search" class="search" placeholder="Filter review items...">
+    <div>
+    <article class="card searchable-item">
+      <h3>冲突记录</h3>
+      <p class="meta"><code>AI_CONTEXT/projects/example_project/conflicts.md</code></p>
+      
+      <div><span class="badge">scope: project/example_project</span><span class="badge">type: conflicts</span><span class="badge">status: active</span></div>
+    </article>
+    
+    <article class="card searchable-item">
+      <h3>纠正记录</h3>
+      <p class="meta"><code>AI_CONTEXT/projects/example_project/corrections.md</code></p>
+      
+      <div><span class="badge">scope: project/example_project</span><span class="badge">type: corrections</span><span class="badge">status: active</span></div>
+    </article>
+    
+    <article class="card searchable-item">
+      <h3>未决问题</h3>
+      <p class="meta"><code>AI_CONTEXT/projects/example_project/open_questions.md</code></p>
+      
+      <div><span class="badge">scope: project/example_project</span><span class="badge">type: open_questions</span><span class="badge">status: active</span></div>
+    </article>
+    
+    <article class="card searchable-item">
+      <h3>Questions</h3>
+      <p class="meta"><code>AI_CONTEXT/projects/example_project/supervision/QUESTIONS.md</code></p>
+      
+      <div><span class="badge">scope: project/example_project</span><span class="badge">type: supervision_questions</span><span class="badge">status: active</span></div>
+    </article>
+    
+    <article class="card searchable-item">
+      <h3>Markdown Documentation Convention</h3>
+      <p class="meta"><code>AI_CONTEXT/reusable/conventions/markdown_doc_convention.md</code></p>
+      <p class='meta'>id: <code>markdown_doc_convention</code></p>
+      <div><span class="badge">scope: reusable</span><span class="badge">type: convention</span><span class="badge">status: draft</span><span class="badge">trust: medium</span></div>
+    </article>
+    
+    <article class="card searchable-item">
+      <h3>Python Simulation Data Analysis Flow</h3>
+      <p class="meta"><code>AI_CONTEXT/reusable/flows/python_sim_data_analysis.md</code></p>
+      <p class='meta'>id: <code>python_sim_data_analysis</code></p>
+      <div><span class="badge">scope: reusable</span><span class="badge">type: flow</span><span class="badge">status: draft</span><span class="badge">trust: medium</span></div>
+    </article>
+    
+    <article class="card searchable-item">
+      <h3>Reusable Memory</h3>
+      <p class="meta"><code>AI_CONTEXT/reusable/README.md</code></p>
+      <p class='meta'>id: <code>reusable_memory_root</code></p>
+      <div><span class="badge">scope: reusable</span><span class="badge">type: index</span><span class="badge">status: draft</span><span class="badge">trust: medium</span></div>
+    </article>
+    
+    <article class="card searchable-item">
+      <h3>Virtuoso Bridge Tool Memory</h3>
+      <p class="meta"><code>AI_CONTEXT/reusable/tools/virtuoso_bridge.md</code></p>
+      <p class='meta'>id: <code>virtuoso_bridge</code></p>
+      <div><span class="badge">scope: reusable</span><span class="badge">type: tool</span><span class="badge">status: draft</span><span class="badge">trust: medium</span></div>
+    </article>
+    </div>
+    <script>window.addEventListener("load", function () { aiMemorySearch("search", ".searchable-item"); });</script>
+    
+    </main>
+  </div>
+  <script src="../assets/app.js"></script>
+</body>
+</html>

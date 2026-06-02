@@ -1,0 +1,499 @@
+[
+  {
+    "title": "项目约束",
+    "rel_path": "AI_CONTEXT/constraints.md",
+    "type": "constraints",
+    "scope": "project",
+    "status": "active",
+    "trust_level": "",
+    "metadata": {
+      "type": "constraints",
+      "scope": "project",
+      "status": "active",
+      "version": 0.1,
+      "last_updated": "2026-05-05"
+    }
+  },
+  {
+    "title": "Memory 治理策略",
+    "rel_path": "AI_CONTEXT/memory_policy.md",
+    "type": "policy",
+    "scope": "global",
+    "status": "active",
+    "trust_level": "",
+    "metadata": {
+      "type": "policy",
+      "name": "memory_governance",
+      "scope": "global",
+      "status": "active",
+      "version": 0.3,
+      "last_updated": "2026-05-05"
+    }
+  },
+  {
+    "title": "冲突记录",
+    "rel_path": "AI_CONTEXT/projects/example_project/conflicts.md",
+    "type": "conflicts",
+    "scope": "project/example_project",
+    "status": "active",
+    "trust_level": "",
+    "metadata": {
+      "type": "conflicts",
+      "scope": "project/example_project",
+      "status": "active",
+      "version": 0.1,
+      "last_updated": "2026-05-06"
+    }
+  },
+  {
+    "title": "纠正记录",
+    "rel_path": "AI_CONTEXT/projects/example_project/corrections.md",
+    "type": "corrections",
+    "scope": "project/example_project",
+    "status": "active",
+    "trust_level": "",
+    "metadata": {
+      "type": "corrections",
+      "scope": "project/example_project",
+      "status": "active",
+      "version": 0.1,
+      "last_updated": "2026-05-06"
+    }
+  },
+  {
+    "title": "项目决策",
+    "rel_path": "AI_CONTEXT/projects/example_project/decisions.md",
+    "type": "decisions",
+    "scope": "project/example_project",
+    "status": "active",
+    "trust_level": "",
+    "metadata": {
+      "type": "decisions",
+      "scope": "project/example_project",
+      "status": "active",
+      "version": 0.1,
+      "last_updated": "2026-05-06"
+    }
+  },
+  {
+    "title": "项目：Example Project",
+    "rel_path": "AI_CONTEXT/projects/example_project/index.md",
+    "type": "project",
+    "scope": "project",
+    "status": "active",
+    "trust_level": "",
+    "metadata": {
+      "type": "project",
+      "name": "example_project",
+      "scope": "project",
+      "status": "active",
+      "version": 0.1,
+      "aliases": [
+        "demo",
+        "example",
+        "sample project"
+      ],
+      "last_updated": "2026-05-06"
+    }
+  },
+  {
+    "title": "未决问题",
+    "rel_path": "AI_CONTEXT/projects/example_project/open_questions.md",
+    "type": "open_questions",
+    "scope": "project/example_project",
+    "status": "active",
+    "trust_level": "",
+    "metadata": {
+      "type": "open_questions",
+      "scope": "project/example_project",
+      "status": "active",
+      "version": 0.1,
+      "last_updated": "2026-05-06"
+    }
+  },
+  {
+    "title": "路由日志",
+    "rel_path": "AI_CONTEXT/projects/example_project/route_log.md",
+    "type": "route_log",
+    "scope": "project/example_project",
+    "status": "active",
+    "trust_level": "",
+    "metadata": {
+      "type": "route_log",
+      "scope": "project/example_project",
+      "status": "active",
+      "version": 0.1,
+      "last_updated": "2026-05-06"
+    }
+  },
+  {
+    "title": "Executor Brief",
+    "rel_path": "AI_CONTEXT/projects/example_project/supervision/EXECUTOR_BRIEF.md",
+    "type": "executor_brief",
+    "scope": "project/example_project",
+    "status": "active",
+    "trust_level": "",
+    "metadata": {
+      "type": "executor_brief",
+      "scope": "project/example_project",
+      "status": "active",
+      "version": 0.1,
+      "last_updated": "2026-05-06"
+    }
+  },
+  {
+    "title": "Handoff Log",
+    "rel_path": "AI_CONTEXT/projects/example_project/supervision/HANDOFF_LOG.md",
+    "type": "handoff_log",
+    "scope": "project/example_project",
+    "status": "active",
+    "trust_level": "",
+    "metadata": {
+      "type": "handoff_log",
+      "scope": "project/example_project",
+      "status": "active",
+      "version": 0.1,
+      "last_updated": "2026-05-06"
+    }
+  },
+  {
+    "title": "Questions",
+    "rel_path": "AI_CONTEXT/projects/example_project/supervision/QUESTIONS.md",
+    "type": "supervision_questions",
+    "scope": "project/example_project",
+    "status": "active",
+    "trust_level": "",
+    "metadata": {
+      "type": "supervision_questions",
+      "scope": "project/example_project",
+      "status": "active",
+      "version": 0.1,
+      "last_updated": "2026-05-06"
+    }
+  },
+  {
+    "title": "Supervision Channel",
+    "rel_path": "AI_CONTEXT/projects/example_project/supervision/README.md",
+    "type": "supervision_index",
+    "scope": "project/example_project",
+    "status": "active",
+    "trust_level": "",
+    "metadata": {
+      "type": "supervision_index",
+      "scope": "project/example_project",
+      "status": "active",
+      "version": 0.1,
+      "last_updated": "2026-05-06"
+    }
+  },
+  {
+    "title": "Review Checkpoints",
+    "rel_path": "AI_CONTEXT/projects/example_project/supervision/REVIEW_CHECKPOINTS.md",
+    "type": "review_checkpoints",
+    "scope": "project/example_project",
+    "status": "active",
+    "trust_level": "",
+    "metadata": {
+      "type": "review_checkpoints",
+      "scope": "project/example_project",
+      "status": "active",
+      "version": 0.1,
+      "last_updated": "2026-05-06"
+    }
+  },
+  {
+    "title": "Validation Plan",
+    "rel_path": "AI_CONTEXT/projects/example_project/validation_plan.md",
+    "type": "validation_plan",
+    "scope": "project/example_project",
+    "status": "active",
+    "trust_level": "",
+    "metadata": {
+      "type": "validation_plan",
+      "scope": "project/example_project",
+      "status": "active",
+      "version": 0.1,
+      "last_updated": "2026-05-06"
+    }
+  },
+  {
+    "title": "项目索引",
+    "rel_path": "AI_CONTEXT/projects/index.md",
+    "type": "project_index",
+    "scope": "global",
+    "status": "active",
+    "trust_level": "",
+    "metadata": {
+      "type": "project_index",
+      "scope": "global",
+      "status": "active",
+      "version": 0.1,
+      "last_updated": "2026-05-06"
+    }
+  },
+  {
+    "title": "AI Context Root",
+    "rel_path": "AI_CONTEXT/README.md",
+    "type": "root_index",
+    "scope": "global",
+    "status": "active",
+    "trust_level": "",
+    "metadata": {
+      "type": "root_index",
+      "scope": "global",
+      "status": "active",
+      "version": 0.1,
+      "last_updated": "2026-05-06"
+    }
+  },
+  {
+    "title": "Markdown Documentation Convention",
+    "rel_path": "AI_CONTEXT/reusable/conventions/markdown_doc_convention.md",
+    "type": "convention",
+    "scope": "reusable",
+    "status": "draft",
+    "trust_level": "medium",
+    "metadata": {
+      "id": "markdown_doc_convention",
+      "type": "convention",
+      "scope": "reusable",
+      "status": "draft",
+      "domain": [
+        "documentation",
+        "ai_memory"
+      ],
+      "tools": [
+        "markdown",
+        "git"
+      ],
+      "used_by_projects": [],
+      "related_flows": [],
+      "related_tools": [],
+      "trust_level": "medium",
+      "last_reviewed": "2026-05-26",
+      "last_updated": "2026-05-31"
+    }
+  },
+  {
+    "title": "Python Simulation Data Analysis Flow",
+    "rel_path": "AI_CONTEXT/reusable/flows/python_sim_data_analysis.md",
+    "type": "flow",
+    "scope": "reusable",
+    "status": "draft",
+    "trust_level": "medium",
+    "metadata": {
+      "id": "python_sim_data_analysis",
+      "type": "flow",
+      "scope": "reusable",
+      "status": "draft",
+      "domain": [
+        "analog_ic",
+        "simulation",
+        "data_analysis"
+      ],
+      "tools": [
+        "python",
+        "pandas",
+        "numpy",
+        "matplotlib"
+      ],
+      "used_by_projects": [],
+      "related_flows": [],
+      "related_tools": [
+        "python_analysis_stack"
+      ],
+      "trust_level": "medium",
+      "last_reviewed": "2026-05-26",
+      "last_updated": "2026-05-31"
+    }
+  },
+  {
+    "title": "Spec-first Workflow",
+    "rel_path": "AI_CONTEXT/reusable/patterns/spec_first_workflow.md",
+    "type": "pattern",
+    "scope": "reusable",
+    "status": "active",
+    "trust_level": "high",
+    "metadata": {
+      "id": "spec_first_workflow",
+      "type": "pattern",
+      "scope": "reusable",
+      "status": "active",
+      "domain": [
+        "ai_collaboration",
+        "engineering"
+      ],
+      "tools": [
+        "codex",
+        "chatgpt",
+        "claude_code"
+      ],
+      "used_by_projects": [],
+      "related_flows": [
+        "codex_handoff_pack"
+      ],
+      "related_tools": [],
+      "trust_level": "high",
+      "last_reviewed": "2026-05-26",
+      "last_updated": "2026-05-31"
+    }
+  },
+  {
+    "title": "Reusable Memory",
+    "rel_path": "AI_CONTEXT/reusable/README.md",
+    "type": "index",
+    "scope": "reusable",
+    "status": "draft",
+    "trust_level": "medium",
+    "metadata": {
+      "id": "reusable_memory_root",
+      "type": "index",
+      "scope": "reusable",
+      "status": "draft",
+      "trust_level": "medium",
+      "last_reviewed": "2026-05-26",
+      "last_updated": "2026-05-31"
+    }
+  },
+  {
+    "title": "Virtuoso Bridge Tool Memory",
+    "rel_path": "AI_CONTEXT/reusable/tools/virtuoso_bridge.md",
+    "type": "tool",
+    "scope": "reusable",
+    "status": "draft",
+    "trust_level": "medium",
+    "metadata": {
+      "id": "virtuoso_bridge",
+      "type": "tool",
+      "scope": "reusable",
+      "status": "draft",
+      "domain": [
+        "analog_ic",
+        "eda",
+        "cadence"
+      ],
+      "tools": [
+        "cadence_virtuoso",
+        "skill"
+      ],
+      "used_by_projects": [],
+      "related_flows": [
+        "cdl_hierarchy_extraction"
+      ],
+      "related_tools": [
+        "cadence_virtuoso"
+      ],
+      "trust_level": "medium",
+      "last_reviewed": "2026-05-26",
+      "last_updated": "2026-05-31"
+    }
+  },
+  {
+    "title": "Skill: 工程规格工作流",
+    "rel_path": "AI_CONTEXT/skills/engineering_spec_workflow.md",
+    "type": "skill",
+    "scope": "global",
+    "status": "active",
+    "trust_level": "",
+    "metadata": {
+      "type": "skill",
+      "name": "engineering_spec_workflow",
+      "scope": "global",
+      "status": "active",
+      "version": 0.2,
+      "tags": [
+        "engineering",
+        "spec",
+        "coding",
+        "rtl",
+        "scripts",
+        "architecture"
+      ],
+      "last_updated": "2026-05-05"
+    }
+  },
+  {
+    "title": "Skill: 可信度与验证",
+    "rel_path": "AI_CONTEXT/skills/trust_and_verification.md",
+    "type": "skill",
+    "scope": "global",
+    "status": "active",
+    "trust_level": "",
+    "metadata": {
+      "type": "skill",
+      "name": "trust_and_verification",
+      "scope": "global",
+      "status": "active",
+      "version": 0.2,
+      "tags": [
+        "trust",
+        "verification",
+        "hallucination",
+        "validation"
+      ],
+      "last_updated": "2026-05-05"
+    }
+  },
+  {
+    "title": "TODO — AI Memory System",
+    "rel_path": "AI_CONTEXT/TODO.md",
+    "type": "todo",
+    "scope": "global",
+    "status": "active",
+    "trust_level": "",
+    "metadata": {
+      "type": "todo",
+      "scope": "global",
+      "status": "active",
+      "version": 0.1,
+      "last_updated": "2026-05-06"
+    }
+  },
+  {
+    "title": "可信度与验证策略",
+    "rel_path": "AI_CONTEXT/trust_policy.md",
+    "type": "policy",
+    "scope": "global",
+    "status": "active",
+    "trust_level": "",
+    "metadata": {
+      "type": "policy",
+      "name": "trust_and_verification_policy",
+      "scope": "global",
+      "status": "active",
+      "version": 0.2,
+      "last_updated": "2026-05-05"
+    }
+  },
+  {
+    "title": "User Profile（使用前请填写）",
+    "rel_path": "AI_CONTEXT/user_profile.md",
+    "type": "user_profile",
+    "scope": "global",
+    "status": "active",
+    "trust_level": "",
+    "metadata": {
+      "type": "user_profile",
+      "scope": "global",
+      "status": "active",
+      "version": 0.1,
+      "last_updated": null
+    }
+  },
+  {
+    "title": "渐进式规格工作流（Progressive Specification Workflow）",
+    "rel_path": "AI_CONTEXT/workflow.md",
+    "type": "workflow",
+    "scope": "global",
+    "status": "active",
+    "trust_level": "",
+    "metadata": {
+      "type": "workflow",
+      "name": "progressive_spec_workflow",
+      "scope": "global",
+      "status": "active",
+      "version": 0.2,
+      "last_updated": "2026-05-05"
+    }
+  }
+]
