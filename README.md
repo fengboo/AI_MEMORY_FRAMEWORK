@@ -60,6 +60,7 @@ AI_MEMORY/
 │   ├── CLAUDE.bridge.md                   ←   Claude Code 用
 │   └── lifecycle_metadata_template.md     ←   future lifecycle metadata 参考模板
 └── docs/                                  ← 补充文档
+    ├── bridge_install.md                  ←   给 AI 的 bridge 安装/合并指南
     ├── method_overview.md                 ←   方法论概述
     └── phase5_advanced_options.md         ←   Phase 5 高级特性说明
 ```
@@ -75,6 +76,8 @@ AI_MEMORY/
 ### 给 AI agent 用
 
 本仓库是**集中式上下文存储**。你的工程项目通过桥接文件指向这里。
+
+如果你只是让 AI 帮你把 bridge 安装到某个工程项目里，让它只读 [docs/bridge_install.md](docs/bridge_install.md) 和对应模板即可，不需要读取整个 `AI_CONTEXT/`。
 
 **第一步**：将 AI_MEMORY clone 到本地固定路径：
 ```bash
@@ -104,6 +107,8 @@ AI_MEMORY_ROOT = ${AI_MEMORY_ROOT}
 **第三步**：在你的工程项目根目录放置桥接文件：
 - 用 Codex/AGENTS.md 生态 → 复制 `templates/AGENTS.bridge.md` 到项目根目录，重命名为 `AGENTS.md`
 - 用 Claude Code → 复制 `templates/CLAUDE.bridge.md` 到项目根目录，重命名为 `CLAUDE.md`
+
+如果目标项目已经有 `AGENTS.md` 或 `CLAUDE.md`，不要覆盖原文件；保留原有内容，并把 bridge 内容合入一个独立的 `AI_MEMORY Bridge` section。
 
 **第四步**：根据项目类型调整 bridge 顶部的读/写开关：
 
