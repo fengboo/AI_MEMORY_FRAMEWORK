@@ -13,7 +13,8 @@ Usage:
 
 Options:
   --json          output results as JSON
-  --require-root  require AI_MEMORY_ROOT to be a valid existing path
+  --require-root  require literal AI_MEMORY_ROOT paths to exist; env-var
+                  references are expanded and checked when the env var is set
                   (off by default; template placeholders are accepted)
   --root <path>   set AI_MEMORY root (default: script parent directory)
 """
@@ -21,6 +22,7 @@ Options:
 import sys
 import re
 import json
+import os
 from pathlib import Path
 
 
@@ -101,8 +103,13 @@ PLACEHOLDER_PATTERNS = [
     r"^<AI_MEMORY_ROOT>$",
     r"^/path/to/AI_MEMORY$",
     r"^<path-to-AI_MEMORY>$",
-    r"^\$AI_MEMORY_ROOT$",
-    r"^\$\{AI_MEMORY_ROOT\}$",
+]
+
+ENV_VAR_PATTERNS = [
+    r"^\$\{([A-Za-z_][A-Za-z0-9_]*)\}$",
+    r"^\$([A-Za-z_][A-Za-z0-9_]*)$",
+    r"^%([A-Za-z_][A-Za-z0-9_]*)%$",
+    r"^env:([A-Za-z_][A-Za-z0-9_]*)$",
 ]
 
 
@@ -114,14 +121,32 @@ def is_placeholder(path_str: str) -> bool:
     return False
 
 
+def extract_env_var_name(path_str: str) -> str | None:
+    """Return env var name if path_str is an env-var reference."""
+    for pat in ENV_VAR_PATTERNS:
+        match = re.match(pat, path_str)
+        if match:
+            return match.group(1)
+    return None
+
+
 def check_root_path(file_path: Path, root_value: str) -> list[str]:
     """Validate that AI_MEMORY_ROOT points to an existing directory.
 
     Returns empty list (pass) or list of issue strings.
-    Placeholder values are accepted (not errors).
+    Placeholder values are accepted (not errors). Environment variable
+    references are portable bridge values: if the variable is set, validate the
+    expanded path; if it is not set, accept the reference as unresolved config.
     """
     if is_placeholder(root_value):
         return []
+
+    env_name = extract_env_var_name(root_value)
+    if env_name:
+        env_value = os.environ.get(env_name)
+        if not env_value:
+            return []
+        root_value = env_value
 
     candidate = Path(root_value)
     if not candidate.is_absolute():
@@ -154,8 +179,9 @@ def parse_fenced_yaml_switches(text: str) -> dict[str, str] | None:
 def check_bridge(file_path: Path, require_root: bool = False) -> list[str]:
     """Return list of issues for a bridge file.
 
-    If require_root is True, also validate that AI_MEMORY_ROOT points
-    to an existing directory (template placeholders are accepted).
+    If require_root is True, also validate that literal AI_MEMORY_ROOT paths
+    point to an existing directory. Env-var references are expanded and checked
+    when available; unresolved env refs and template placeholders are accepted.
     """
     issues = []
 

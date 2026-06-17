@@ -81,12 +81,33 @@ AI_MEMORY/
 git clone <your-repo-url> /path/to/AI_MEMORY
 ```
 
-**第二步**：在你的工程项目根目录放置桥接文件：
+**第二步**：在每台机器上设置一次全局环境变量，让所有项目用同一个变量引用 AI_MEMORY：
+
+macOS / Linux:
+```bash
+export AI_MEMORY_ROOT="/path/to/AI_MEMORY"
+```
+
+Windows PowerShell:
+```powershell
+[Environment]::SetEnvironmentVariable("AI_MEMORY_ROOT", "C:\path\to\AI_MEMORY", "User")
+```
+
+Bridge 模板默认使用：
+
+```text
+AI_MEMORY_ROOT = ${AI_MEMORY_ROOT}
+```
+
+支持 `${AI_MEMORY_ROOT}`、`$AI_MEMORY_ROOT`、`%AI_MEMORY_ROOT%` 和 `env:AI_MEMORY_ROOT`。如果某个 AI 工具无法读取环境变量，可在该项目 bridge 顶部把 `AI_MEMORY_ROOT` 临时改成显式绝对路径。
+
+**第三步**：在你的工程项目根目录放置桥接文件：
 - 用 Codex/AGENTS.md 生态 → 复制 `templates/AGENTS.bridge.md` 到项目根目录，重命名为 `AGENTS.md`
 - 用 Claude Code → 复制 `templates/CLAUDE.bridge.md` 到项目根目录，重命名为 `CLAUDE.md`
-- 修改桥接文件顶部的 `AI_MEMORY_ROOT` 为实际路径
 
-**第三步**：根据项目类型调整 bridge 顶部的读/写开关：
+**第四步**：根据项目类型调整 bridge 顶部的读/写开关：
+
+通常只修改 bridge 文件顶部的 `Bridge Switches`。`AI_MEMORY_ROOT` 保持变量写法即可；只有需要项目级覆盖或环境变量不可用时才改。正文表格只是说明，不作为第二份配置。
 
 | 场景 | 配置 |
 |---|---|
@@ -139,6 +160,7 @@ python scripts/ai_context_link_check.py --all --anchors --json
 # Bridge 模板开关配置校验（--all 检查所有 bridge 文件）
 python scripts/bridge_config_check.py templates/AGENTS.bridge.md
 python scripts/bridge_config_check.py --all
+python scripts/bridge_config_check.py --all --require-root
 
 # Python 语法检查
 python -m py_compile scripts/ai_context_lint.py

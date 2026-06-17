@@ -2,14 +2,16 @@
 type: template
 name: claude_bridge
 scope: global
-version: 0.3
+version: 0.4
 description: 放在任何工程目录根下，作为 Claude Code 通向 AI_MEMORY 的桥梁
 ---
 
-<!-- AI_MEMORY_ROOT = <AI_MEMORY_ROOT> -->
-<!-- 使用时替换为实际路径，例如 C:\Path\To\AI_MEMORY 或 /path/to/AI_MEMORY -->
+<!-- AI_MEMORY_ROOT = ${AI_MEMORY_ROOT} -->
+<!-- 推荐先在系统/用户环境变量中设置 AI_MEMORY_ROOT。
+     如果当前 AI 工具无法读取环境变量，可将上一行改为显式绝对路径。 -->
 
-<!-- 只修改本文件顶部的 AI_MEMORY_ROOT 和 Bridge Switches。
+<!-- 通常只需要调整本文件顶部的 Bridge Switches。
+     只有需要项目级覆盖时，才修改 AI_MEMORY_ROOT。
      下方正文只是说明，不作为第二份配置。 -->
 
 <!-- ============================================================
@@ -38,6 +40,21 @@ description: 放在任何工程目录根下，作为 Claude Code 通向 AI_MEMOR
 ## Bridge Switches 说明
 
 本文件顶部的 `Bridge Switches` 是唯一 authoritative config。需要改读写权限时，只改顶部注释块中的 `on / off`，不要改正文说明。
+
+`AI_MEMORY_ROOT` 是 AI_MEMORY 集中仓库的位置。推荐在每台机器上设置一次系统/用户环境变量，然后所有项目的 bridge 都保持：
+
+```text
+AI_MEMORY_ROOT = ${AI_MEMORY_ROOT}
+```
+
+Agent 解析路径时先展开该变量，再读取 `{AI_MEMORY_ROOT}/AI_CONTEXT/...`。支持的变量写法：
+
+- `${AI_MEMORY_ROOT}`
+- `$AI_MEMORY_ROOT`
+- `%AI_MEMORY_ROOT%`
+- `env:AI_MEMORY_ROOT`
+
+如果环境变量不可用，agent 应要求用户提供路径，或仅输出 proposed diff / suggested update，不应猜测 AI_MEMORY 位置。
 
 **读开关：**
 | 开关 | 控制内容 | 建议 |
