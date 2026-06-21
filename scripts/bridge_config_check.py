@@ -176,14 +176,35 @@ def parse_fenced_yaml_switches(text: str) -> dict[str, str] | None:
     return switches if switches else None
 
 
+def _is_deprecated(text: str) -> bool:
+    """Check if the file's YAML frontmatter marks it as deprecated."""
+    m = re.search(r'^---\s*\n(.*?)\n---', text, re.DOTALL)
+    if m:
+        for line in m.group(1).splitlines():
+            if re.match(r'^status\s*:\s*deprecated\s*$', line, re.IGNORECASE):
+                return True
+    return False
+
+
 def check_bridge(file_path: Path, require_root: bool = False) -> list[str]:
     """Return list of issues for a bridge file.
 
     If require_root is True, also validate that literal AI_MEMORY_ROOT paths
     point to an existing directory. Env-var references are expanded and checked
     when available; unresolved env refs and template placeholders are accepted.
+
+    If the file is a symlink to another bridge file, validation succeeds with
+    an info note (the target file is the authoritative source).
     """
     issues = []
+
+    # Detect symlink: if CLAUDE.md → AGENTS.md, this is intentional —
+    # the target is the authoritative file; no need to re-validate.
+    if file_path.is_symlink():
+        target = file_path.resolve()
+        if target.exists() and target != file_path:
+            issues.append(f"info: symlink -> {target.name} (target validated separately)")
+            return issues
 
     try:
         text = file_path.read_text(encoding="utf-8")
@@ -196,6 +217,10 @@ def check_bridge(file_path: Path, require_root: bool = False) -> list[str]:
         switches = parse_html_comment_switches(text)
 
     if not switches:
+        # Check if this file is marked as deprecated in frontmatter
+        if _is_deprecated(text):
+            issues.append("info: bridge template is deprecated, no switches expected")
+            return issues
         issues.append("no bridge switches found (tried YAML fenced block and HTML comments)")
         return issues
 
@@ -235,12 +260,14 @@ def scan_all_bridges(require_root: bool = False) -> dict[str, list[str]]:
     """Find and check all bridge files under AI_MEMORY."""
     results = {}
     candidates = [
-        AI_MEMORY_ROOT / "templates" / "AGENTS.bridge.md",
-        AI_MEMORY_ROOT / "templates" / "CLAUDE.bridge.md",
+        (AI_MEMORY_ROOT / "templates" / "AGENTS.bridge.md", False),
+        (AI_MEMORY_ROOT / "templates" / "CLAUDE.bridge.md", True),  # deprecated
     ]
-    for p in candidates:
+    for p, deprecated in candidates:
         if p.exists():
             issues = check_bridge(p, require_root=require_root)
+            if deprecated:
+                issues.append("info: CLAUDE.bridge.md is deprecated — use AGENTS.bridge.md + symlink (CLAUDE.md → AGENTS.md)")
             if issues:
                 results[str(p.relative_to(AI_MEMORY_ROOT))] = issues
     return results

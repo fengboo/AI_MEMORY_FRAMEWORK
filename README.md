@@ -56,8 +56,8 @@ AI_MEMORY/
 │   └── build_site.py                      ←   生成 HTML site viewer
 ├── site/                                  ← HTML 查看层（generated，不是 source of truth）
 ├── templates/                             ← 桥接模板（复制到工程目录用）
-│   ├── AGENTS.bridge.md                   ←   Codex / AGENTS.md 生态用
-│   ├── CLAUDE.bridge.md                   ←   Claude Code 用
+│   ├── AGENTS.bridge.md                   ←   唯一 bridge 模板，工具无关（Codex + Claude Code）
+│   ├── CLAUDE.bridge.md                   ←   已废弃，保留作为迁移参考。CLAUDE.md 用 symlink 替代
 │   └── lifecycle_metadata_template.md     ←   future lifecycle metadata 参考模板
 └── docs/                                  ← 补充文档
     ├── bridge_install.md                  ←   给 AI 的 bridge 安装/合并指南
@@ -104,9 +104,24 @@ AI_MEMORY_ROOT = ${AI_MEMORY_ROOT}
 
 支持 `${AI_MEMORY_ROOT}`、`$AI_MEMORY_ROOT`、`%AI_MEMORY_ROOT%` 和 `env:AI_MEMORY_ROOT`。如果某个 AI 工具无法读取环境变量，可在该项目 bridge 顶部把 `AI_MEMORY_ROOT` 临时改成显式绝对路径。
 
-**第三步**：在你的工程项目根目录放置桥接文件：
-- 用 Codex/AGENTS.md 生态 → 复制 `templates/AGENTS.bridge.md` 到项目根目录，重命名为 `AGENTS.md`
-- 用 Claude Code → 复制 `templates/CLAUDE.bridge.md` 到项目根目录，重命名为 `CLAUDE.md`
+**第三步**：在你的工程项目根目录放置桥接文件。
+
+`templates/AGENTS.bridge.md` 是**唯一** bridge 模板（v0.5 起已工具无关化）。安装方式：
+
+1. 复制 `templates/AGENTS.bridge.md` → 项目根目录 `AGENTS.md`
+2. 创建 `CLAUDE.md` 作为指向 `AGENTS.md` 的符号链接：
+
+   ```bash
+   # macOS / Linux
+   ln -s AGENTS.md CLAUDE.md
+
+   # Windows PowerShell（需 Developer Mode 或管理员权限）
+   New-Item -ItemType SymbolicLink -Path CLAUDE.md -Target AGENTS.md
+   ```
+
+   如果无法创建符号链接，则复制 `AGENTS.md` → `CLAUDE.md`（两个文件需手动保持同步）。
+
+这样 Codex 读 `AGENTS.md`，Claude Code 读 `CLAUDE.md`（或 `AGENTS.md`），实际读取的是同一份内容，修改任意一个自动同步。
 
 如果目标项目已经有 `AGENTS.md` 或 `CLAUDE.md`，不要覆盖原文件；保留原有内容，并把 bridge 内容合入一个独立的 `AI_MEMORY Bridge` section。
 
@@ -132,6 +147,11 @@ AI_MEMORY_ROOT = ${AI_MEMORY_ROOT}
 | `ROUTE_LOG_RW` | 写入 route_log | off | `PROJECT_MEMORY_RO=on` |
 
 当 RW 开关为 off 时，agent 只能输出 proposed diff / suggested update，不写入 AI_MEMORY。
+
+**支持的 AI 工具及自动加载行为：**
+- **Codex**: 自动读取项目根目录的 `AGENTS.md`，无需显式说明
+- **Claude Code**: 自动读取项目根目录的 `CLAUDE.md`；也支持 `AGENTS.md`。推荐 `CLAUDE.md` 作为指向 `AGENTS.md` 的符号链接，统一两份文件
+- **Cursor**: 使用 `.cursor/rules/*.mdc`，需在 rules 中引用 AI_MEMORY 路径
 
 ### 多角色协作模式（可选）
 
