@@ -1,212 +1,112 @@
-"""Front matter lint for AI_CONTEXT/ markdown files.
+#!/usr/bin/env python3
+"""Validate YAML front matter under AI_CONTEXT/."""
 
-Checks:
-  1. Every .md under AI_CONTEXT/ has YAML front matter
-  2. Required fields present: type
-  3. Key files (operational) have: type, scope, status, last_updated
-  4. status values are valid: active | deprecated | resolved | synthetic | candidate | ...
-  5. type values are from known set
+from __future__ import annotations
 
-Options:
-  --strict : also check stale dates (last_updated > 60 days) and enforce
-             last_updated on key files
-  --json   : output results as JSON (default: human-readable)
-
-Usage: python scripts/ai_context_lint.py [--strict] [--json] [--root <path>]
-"""
-
-import sys
-import re
+import argparse
 import json
-from pathlib import Path
 from datetime import datetime, timedelta
+from pathlib import Path
 
+from diagnostics import Diagnostic, SCHEMA_VERSION, should_fail, summary
 
-def _find_root() -> Path:
-    """Find AI_MEMORY root. Checks --root arg first, then script location."""
-    for i, arg in enumerate(sys.argv):
-        if arg == "--root" and i + 1 < len(sys.argv):
-            return Path(sys.argv[i + 1]).resolve()
-    return Path(__file__).resolve().parent.parent
-
-
-AI_MEMORY_ROOT = _find_root()
-AI_CONTEXT = AI_MEMORY_ROOT / "AI_CONTEXT"
-
-REQUIRED_ALL = {"type"}
-# Key files must have type, scope, status. last_updated enforced in --strict mode.
 REQUIRED_KEY = {"type", "scope", "status"}
-VALID_STATUS = {"active", "deprecated", "resolved", "synthetic", "candidate",
-                "open", "closed", "pending", "draft"}
-VALID_TYPES = {
-    "root_index", "project_index", "project", "policy", "workflow",
-    "skill", "user_profile", "todo", "constraints", "conflicts",
-    "corrections", "decisions", "open_questions", "route_log",
-    "validation_plan", "supervision_index", "executor_brief",
-    "handoff_log", "supervision_questions", "review_checkpoints",
-    "validation_report", "next_phase_plan", "index", "flow", "tool",
-    "pattern", "convention",
-}
-
+VALID_STATUS = {"active", "deprecated", "resolved", "synthetic", "candidate", "open", "closed", "pending", "draft"}
+VALID_TYPES = {"root_index", "project_index", "project", "policy", "workflow", "skill", "user_profile", "todo", "constraints", "conflicts", "corrections", "decisions", "open_questions", "route_log", "validation_plan", "supervision_index", "executor_brief", "handoff_log", "supervision_questions", "review_checkpoints", "validation_report", "next_phase_plan", "index", "flow", "tool", "pattern", "convention"}
 SKIP_DIRS = {"reference", "templates", "scripts"}
 
-STALE_DAYS = 60
 
-
-def extract_front_matter(path: Path) -> tuple[dict | None, int]:
-    """Return (front_matter_dict, line_count) or (None, 0) if none found.
-
-    Requires the opening --- to be on line 1 and closing --- on its own line.
-    """
+def extract_front_matter(path: Path) -> dict[str, str] | None:
     try:
-        text = path.read_text(encoding="utf-8")
-    except Exception:
-        return None, 0
-
-    lines = text.splitlines()
-
-    # Must start with ---
+        lines = path.read_text(encoding="utf-8").splitlines()
+    except OSError:
+        return None
     if not lines or lines[0].strip() != "---":
-        return None, len(lines)
-
-    # Find closing --- on its own line
-    end_idx = None
-    for i in range(1, len(lines)):
-        if lines[i].strip() == "---":
-            end_idx = i
-            break
-
-    if end_idx is None:
-        return None, len(lines)
-
-    fm_text = "\n".join(lines[1:end_idx]).strip()
-    data = {}
-    for line in fm_text.splitlines():
-        line = line.strip()
-        if ":" in line and not line.startswith("#"):
-            key, _, val = line.partition(":")
-            data[key.strip()] = val.strip()
-
-    return data, len(lines)
+        return None
+    try:
+        end = next(i for i, line in enumerate(lines[1:], 1) if line.strip() == "---")
+    except StopIteration:
+        return None
+    values: dict[str, str] = {}
+    for line in lines[1:end]:
+        stripped = line.strip()
+        if ":" in stripped and not stripped.startswith("#"):
+            key, _, value = stripped.partition(":")
+            values[key.strip()] = value.strip()
+    return values
 
 
-def check_file(path: Path, strict: bool) -> list[str]:
-    """Return list of issues for this file."""
-    issues = []
-    rel = path.relative_to(AI_CONTEXT)
-
-    fm, _ = extract_front_matter(path)
-
-    # 1. Has front matter?
+def check_file(path: Path, context: Path, strict: bool, stale_days: int) -> list[Diagnostic]:
+    rel = path.relative_to(context).as_posix()
+    fm = extract_front_matter(path)
     if fm is None:
-        issues.append(f"MISSING front matter")
-        return issues
-    if fm == {}:
-        issues.append(f"EMPTY front matter")
-        return issues
-
-    # 2. Required: type
-    file_type = fm.get("type", "")
-    if "type" not in fm:
-        issues.append(f"missing required field: type")
+        return [Diagnostic("FM001", "error", "missing front matter", rel)]
+    if not fm:
+        return [Diagnostic("FM001", "error", "empty front matter", rel)]
+    diagnostics: list[Diagnostic] = []
+    file_type = fm.get("type")
+    if not file_type:
+        diagnostics.append(Diagnostic("FM002", "error", "missing required field: type", rel))
     elif file_type not in VALID_TYPES:
-        issues.append(f"unknown type: '{file_type}'")
-
-    # 3. Key files need scope, status, and last_updated (enforced in strict)
+        diagnostics.append(Diagnostic("FM003", "error", f"unknown type: {file_type!r}", rel))
     is_key = file_type not in {"todo", "open_questions"}
     if is_key or strict:
-        for field in REQUIRED_KEY:
-            if field not in fm:
-                issues.append(f"missing field in key file: {field}")
+        for field in sorted(REQUIRED_KEY):
+            if not fm.get(field):
+                diagnostics.append(Diagnostic("FM002", "error", f"missing field in key file: {field}", rel))
         if strict and "last_updated" not in fm:
-            issues.append(f"missing field in key file: last_updated (required in --strict)")
-
-    # 4. Status value check
-    if "status" in fm and fm["status"] not in VALID_STATUS:
-        issues.append(f"invalid status: '{fm['status']}'")
-
-    # 5. Stale check — only in --strict mode
-    # The health-check in memory_policy.md expects stale detection to be run
-    # periodically.  The --strict flag is the canonical path for this check;
-    # without it, stale detection is skipped.
-    if strict and fm.get("status") == "active":
-        lu = fm.get("last_updated", "")
-        if lu:
-            try:
-                dt = datetime.strptime(lu, "%Y-%m-%d")
-                if datetime.now() - dt > timedelta(days=STALE_DAYS):
-                    issues.append(
-                        f"stale: last_updated={lu} ({STALE_DAYS}+ days ago)"
-                    )
-            except ValueError:
-                issues.append(f"bad date format in last_updated: '{lu}'")
-
-    return issues
+            diagnostics.append(Diagnostic("FM002", "error", "missing field in key file: last_updated", rel))
+    if fm.get("status") and fm["status"] not in VALID_STATUS:
+        diagnostics.append(Diagnostic("FM004", "error", f"invalid status: {fm['status']!r}", rel))
+    if not fm.get("schema_version"):
+        diagnostics.append(Diagnostic("FM100", "info", "legacy metadata without schema_version", rel))
+    if strict and fm.get("status") == "active" and fm.get("last_updated"):
+        try:
+            updated = datetime.strptime(fm["last_updated"], "%Y-%m-%d")
+        except ValueError:
+            diagnostics.append(Diagnostic("FM005", "error", f"invalid last_updated date: {fm['last_updated']!r}", rel))
+        else:
+            if datetime.now() - updated > timedelta(days=stale_days):
+                diagnostics.append(Diagnostic("FM101", "warning", f"stale active memory: last_updated={fm['last_updated']}", rel))
+    return diagnostics
 
 
-def format_human(all_issues: dict[str, list[str]], file_count: int, mode: str):
-    """Human-readable output."""
-    print(f"AI_CONTEXT front matter lint")
-    print(f"Scanned: {file_count} files")
-    print(f"Issues:  {len(all_issues)} files")
-    print(f"Mode:    {mode}")
-    print()
-
-    if not all_issues:
-        print("All clean.")
-        return
-
-    for fname, issues in sorted(all_issues.items()):
-        print(f"  {fname}:")
-        for issue in issues:
-            print(f"    - {issue}")
-        print()
-
-    total = sum(len(v) for v in all_issues.values())
-    print(f"Total issues: {total}")
+def format_human(diagnostics: list[Diagnostic], scanned: int) -> None:
+    counts = summary(diagnostics, scanned)
+    print(f"AI_CONTEXT front matter lint\nScanned: {scanned}\nErrors: {counts['errors']}  Warnings: {counts['warnings']}  Info: {counts['info']}")
+    for item in diagnostics:
+        print(f"{item.severity.upper()} {item.code} {item.path}: {item.message}")
 
 
-def format_json(all_issues: dict[str, list[str]], file_count: int, mode: str) -> str:
-    """JSON output."""
-    result = {
-        "tool": "ai_context_lint",
-        "scanned": file_count,
-        "files_with_issues": len(all_issues),
-        "mode": mode,
-        "issues": {k: v for k, v in all_issues.items()},
-    }
-    return json.dumps(result, ensure_ascii=False, indent=2)
-
-
-def main():
-    strict = "--strict" in sys.argv
-    use_json = "--json" in sys.argv
-    mode = "strict" if strict else "standard"
-
-    root = AI_CONTEXT
-    all_issues: dict[str, list[str]] = {}
-    file_count = 0
-
-    for md_file in sorted(root.rglob("*.md")):
-        parts = md_file.relative_to(root).parts
-        if parts and parts[0] in SKIP_DIRS:
-            continue
-        if any(p.startswith(".") for p in parts):
-            continue
-
-        issues = check_file(md_file, strict)
-        file_count += 1
-        if issues:
-            all_issues[str(md_file.relative_to(root))] = issues
-
-    if use_json:
-        print(format_json(all_issues, file_count, mode))
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--strict", action="store_true", help="enable stale-date checks")
+    parser.add_argument("--json", action="store_true")
+    parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
+    parser.add_argument("--fail-on-warning", action="store_true")
+    parser.add_argument("--stale-days", type=int, default=60)
+    args = parser.parse_args()
+    if args.stale_days <= 0:
+        parser.error("--stale-days must be positive")
+    context = args.root.resolve() / "AI_CONTEXT"
+    diagnostics: list[Diagnostic] = []
+    scanned = 0
+    if not context.is_dir():
+        diagnostics.append(Diagnostic("FM006", "error", "missing AI_CONTEXT directory", str(context)))
     else:
-        format_human(all_issues, file_count, mode)
-
-    total = sum(len(v) for v in all_issues.values())
-    return 1 if total > 0 else 0
+        for path in sorted(context.rglob("*.md")):
+            parts = path.relative_to(context).parts
+            if parts[0] in SKIP_DIRS or any(part.startswith(".") for part in parts):
+                continue
+            scanned += 1
+            diagnostics.extend(check_file(path, context, args.strict, args.stale_days))
+    payload = {"schema_version": SCHEMA_VERSION, "tool": "ai_context_lint", "mode": "strict" if args.strict else "standard", "summary": summary(diagnostics, scanned), "diagnostics": [item.to_dict() for item in diagnostics]}
+    if args.json:
+        print(json.dumps(payload, ensure_ascii=False, indent=2))
+    else:
+        format_human(diagnostics, scanned)
+    return 1 if should_fail(diagnostics, args.fail_on_warning) else 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    raise SystemExit(main())
