@@ -59,9 +59,12 @@ AI_MEMORY/
 │   ├── AGENTS.bridge.md                   ←   唯一 bridge 模板，工具无关（Codex + Claude Code）
 │   ├── CLAUDE.bridge.md                   ←   已废弃，保留作为迁移参考。CLAUDE.md 用 symlink 替代
 │   └── lifecycle_metadata_template.md     ←   future lifecycle metadata 参考模板
+├── skills/                                ← 可安装到 Codex 的 skills
+│   └── ai-memory-bridge-installer/        ←   安装/合并 AI_MEMORY bridge
 └── docs/                                  ← 补充文档
     ├── bridge_install.md                  ←   给 AI 的 bridge 安装/合并指南
     ├── method_overview.md                 ←   方法论概述
+    ├── metadata_schema.md                 ←   canonical front matter schema
     └── phase5_advanced_options.md         ←   Phase 5 高级特性说明
 ```
 
@@ -169,7 +172,7 @@ AI_MEMORY_ROOT = ${AI_MEMORY_ROOT}
 2. **冲突落盘，不静默裁决** — 矛盾 memory 写入 `conflicts.md`，用户保留最终裁决权
 3. **纠正闭环** — 用户纠正 AI 后，写入 `corrections.md` candidate，确认后更新
 4. **有工具验证 > AI 自述验证 > 无验证** — 能用真实 toolchain 验证的不依赖 AI 自我报告
-5. **读/写开关控制权限** — 小项目只读不写，大项目才开启 memory 积累
+5. **读/写开关是 behavioral policy** — 小项目只读不写，大项目才开启 memory 积累；真正的强制写保护依赖 filesystem permission、sandbox、tool allowlist 或 PR review
 
 ## 验证命令
 
@@ -187,11 +190,20 @@ python scripts/bridge_config_check.py templates/AGENTS.bridge.md
 python scripts/bridge_config_check.py --all
 python scripts/bridge_config_check.py --all --require-root
 
+# Regression tests（stdlib unittest，无需额外 runtime dependency）
+python -m unittest discover -s tests -v
+
 # Python 语法检查
 python -m py_compile scripts/ai_context_lint.py
 python -m py_compile scripts/ai_context_link_check.py
 python -m py_compile scripts/bridge_config_check.py
 ```
+
+## Validator Semantics
+
+`ai_context_lint.py` 和 `bridge_config_check.py` 输出 `schema_version: 1` 的 structured diagnostics：`error`、`warning`、`info`。默认只有 `error` 使命令返回 non-zero；例如 stale active memory 是 warning，deprecated bridge template 是 info。维护任务可显式使用 `--fail-on-warning`。
+
+GitHub Actions 会运行 regression tests、三个 validators 和 site build。详见 `docs/metadata_schema.md`。
 
 ## 刻意不包括的内容
 

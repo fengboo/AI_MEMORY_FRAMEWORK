@@ -27,6 +27,10 @@
 - 不要删除、重写或重排已有项目规则，除非用户明确要求。
 - 如果已有项目规则和 bridge 规则存在 material conflict，保留双方内容，并向用户报告冲突；不要静默裁决。
 
+## 安全边界
+
+`Bridge Switches` 是 agent 解释和遵守的 behavioral policy，不是 operating-system 或 tool-level access control。`PROJECT_MEMORY_RW = off` 或 `ROUTE_LOG_RW = off` 时，agent 应只输出 proposed diff / suggested update；若要强制禁止写入，项目还需要 filesystem permission、sandbox、tool allowlist 或 PR review 等独立控制。
+
 ## 安装步骤
 
 ### 新项目（无已有 agent 文件）

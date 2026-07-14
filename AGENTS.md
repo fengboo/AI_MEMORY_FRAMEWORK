@@ -1,6 +1,6 @@
 # AI 协作工作流
 
-对于非 trivial 的 engineering、coding、architecture、documentation 或 skill-design 任务，不要从自然语言需求直接跳到最终实现。
+对于非 trivial 的 engineering、coding、RTL、script、architecture、documentation 或 skill-design 任务，不要从自然语言需求直接跳到最终实现。
 
 采用 progressive specification workflow（渐进式规格工作流）：
 
@@ -19,6 +19,7 @@
 
 - 不要把假设隐藏在实现选择里。
 - 区分 fact、inference、assumption 和 uncertainty。
+- 解释和逻辑推理用中文，code、API、interface、file name、domain term 保留英文。
 - 高风险或不确定的内容，提供 validation path。
 - 把 AI 视为协作者（colleague），而非权威（authority）。
 - 当检测到持久化 memory 冲突时，写入 `conflicts.md`，不要静默选择。

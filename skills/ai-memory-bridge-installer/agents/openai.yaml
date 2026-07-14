@@ -1,0 +1,4 @@
+interface:
+  display_name: "AI Memory Bridge Installer"
+  short_description: "Install AI_MEMORY bridge files safely"
+  default_prompt: "Use $ai-memory-bridge-installer to install the AI_MEMORY bridge into this project."

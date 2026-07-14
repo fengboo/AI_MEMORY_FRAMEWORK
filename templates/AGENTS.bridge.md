@@ -38,6 +38,9 @@ description: 放在任何工程目录根下，作为通向 AI_MEMORY 集中上�
 <!-- PROJECT_MEMORY_RW   = off -->  <!-- 写入 decisions / conflicts / corrections -->
 <!-- ROUTE_LOG_RW        = off -->  <!-- 写入 route_log（检索命中记录） -->
 
+<!-- 这些 switches 是 agent 应遵守的 behavioral policy，不是 OS 或 tool-level security boundary。
+     要真正禁止写入，请结合 filesystem permission、sandbox、tool allowlist 或 PR review。 -->
+
 # 项目协作规则
 
 > **统一入口说明**：本文件即 `AGENTS.md`。项目根目录的 `CLAUDE.md` 应创建为指向 `AGENTS.md` 的符号链接（`ln -s AGENTS.md CLAUDE.md`），这样 Codex、Claude Code 和其他兼容 AGENTS.md 的 AI 工具读取的都是同一份内容，修改任意一个即可同步。
@@ -78,6 +81,8 @@ AI_MEMORY_ROOT = ${AI_MEMORY_ROOT}
 |---|---|---|
 | `PROJECT_MEMORY_RW` | 写入 decisions / conflicts / corrections | `PROJECT_MEMORY_RO = on` 且 `MEMORY_POLICY_RO = on` |
 | `ROUTE_LOG_RW` | 写入 route_log | `PROJECT_MEMORY_RO = on` |
+
+> 安全边界：RW 为 off 时，agent 应只输出 proposed diff / suggested update。但这只是 prompt-level behavioral policy；它本身不能阻止具有写权限的工具修改文件。
 
 ### 典型场景（示例组合，不是当前配置）
 

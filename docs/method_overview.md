@@ -38,9 +38,11 @@ AI_MEMORY 解决这些问题的思路：**把 AI 协作从一次性问答变成�
 声明标注：`[FACT]` / `[INFER-H]` / `[INFER-L]` / `[ASSUME]` / `[UNKNOWN]` / `[OPINION]`。标注不证明正确性，但暴露声明类型，让用户知道哪些要 review。
 
 ### Bridge + Switches
-工程项目通过 bridge 文件指向集中 AI_MEMORY。读/写开关控制每个项目的权限：
+工程项目通过 bridge 文件指向集中 AI_MEMORY。读/写开关是 agent 应遵守的 behavioral policy：
 - 小项目：只读工作流
 - 大项目：读写全开，经验积累
+
+它们不是 operating-system 或 tool-level security boundary。若要强制禁止写入，应结合 filesystem permission、sandbox、tool allowlist 或 PR review。
 
 ### Validation Loop
 `scripts/ai_context_lint.py` 检查 front matter 完整性，`scripts/ai_context_link_check.py` 检查内部链接。验证原则：有工具闭环 > AI 自述 > 无验证。
